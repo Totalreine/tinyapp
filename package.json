@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/Totalreine/tinyapp/issues"
   },
-  "homepage": "https://github.com/Totalreine/tinyapp#readme"
+  "homepage": "https://github.com/Totalreine/tinyapp#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
 }
