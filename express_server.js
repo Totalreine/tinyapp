@@ -19,6 +19,12 @@ const urlDatabase = {
     let id = (Math.random() + 1).toString(36).substring(7);
     return id
 }*/
+
+app.post("/logout", (req, res) => {
+    res.clearCookie("username")
+    res.redirect("/urls")
+})
+
 app.post("/login", (req, res) => {
     let user = req.body.username
     res.cookie("username", user )
