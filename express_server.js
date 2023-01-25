@@ -17,6 +17,13 @@ const urlDatabase = {
     return id
 }*/
 
+app.post("/urls/:id", (req, res) => {
+    let id = req.params.id
+    let newURL = req.body.url
+    urlDatabase[id] = newURL
+    res.redirect("/urls")
+})
+
 app.post("/urls/:id/delete", (req, res) => {
     const id = req.params.id
     delete urlDatabase[id]
