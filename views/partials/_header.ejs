@@ -16,6 +16,11 @@
         <div class="navbar-nav">
           <a class="nav-item nav-link" href="/urls">My URLs</a>
           <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
+          <form action="/login" method="post" id="login">
+            <label for="login">Login:</label>
+            <input type="text" id="editURL" name="username">
+            <button type="submit" form="login" value="Submit" style="position: relative;">Submit</button>
+          </form>
         </div>
       </div>
     </nav>

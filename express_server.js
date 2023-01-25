@@ -1,3 +1,4 @@
+const { name } = require("ejs");
 const express = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
@@ -16,14 +17,20 @@ const urlDatabase = {
     let id = (Math.random() + 1).toString(36).substring(7);
     return id
 }*/
+app.post("/login", (req, res) => {
+    let user = req.body.username
+    res.cookie("username", user )
+    res.redirect("/urls")
+})
 
+//EDIT
 app.post("/urls/:id", (req, res) => {
     let id = req.params.id
     let newURL = req.body.url
     urlDatabase[id] = newURL
     res.redirect("/urls")
 })
-
+//DELETE
 app.post("/urls/:id/delete", (req, res) => {
     const id = req.params.id
     delete urlDatabase[id]
