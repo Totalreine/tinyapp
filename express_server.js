@@ -11,8 +11,14 @@ app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
 
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+    b6UTxQ: {
+        longURL: "https://www.tsn.ca",
+        userID: "aJ48lW",
+    },
+    i3BoGr: {
+        longURL: "https://www.google.ca",
+        userID: "aJ48lW",
+    },
 };
 
 const users = {
@@ -36,11 +42,15 @@ const users = {
     }
     return null
   }
-  
+
 
 app.get("/register", (req, res) => {
-    
-    res.render("urls_register")
+    let loggedIn = req.cookies["user_id"]
+    if (!loggedIn) {
+        res.render("urls_register")
+    } else {
+        res.redirect("/urls")
+    }
 })
 
 app.post("/register", (req, res) => {
@@ -73,7 +83,13 @@ app.post("/logout", (req, res) => {
 })
 
 app.get("/login", (req, res) => {
-    res.render("urls_login.ejs")
+    let loggedIn = req.cookies["user_id"]
+    if (!loggedIn) {
+        res.render("urls_login.ejs")
+    } else {
+        res.redirect("/urls")
+    }
+    
 })
 
 app.post("/login", (req, res) => {
@@ -99,46 +115,123 @@ app.post("/login", (req, res) => {
 
 //EDIT
 app.post("/urls/:id", (req, res) => {
+    let userID = req.cookies["user_id"]
     let id = req.params.id
     let newURL = req.body.url
-    urlDatabase[id] = newURL
-    res.redirect("/urls")
+    if (urlDatabase[req.params.id] === undefined) {
+        res.render("urls_wrongId")
+    }
+
+    if (urlDatabase[req.params.id].userID !== userID) {
+        res.render("urls_notBelongToID")
+    }
+
+    if (!userID) {
+        res.render("urls_notLoggedIn")
+    } else {
+        urlDatabase[id].longURL = newURL
+        res.redirect("/urls")
+    }
+
+   
 })
 //DELETE
 app.post("/urls/:id/delete", (req, res) => {
+    let userID = req.cookies["user_id"]
     const id = req.params.id
-    delete urlDatabase[id]
-    res.redirect("/urls")
+
+    if (urlDatabase[req.params.id] === undefined) {
+        res.render("urls_wrongId")
+    }
+
+    if (urlDatabase[req.params.id].userID !== userID) {
+        res.render("urls_notBelongToID")
+    }
+
+    if (!userID) {
+        res.render("urls_notLoggedIn")
+    } else {
+        delete urlDatabase[id]
+        res.redirect("/urls")
+    }
+
+   
 })
 
 app.get("/u/:id", (req, res) => {
-    const longURL = urlDatabase[req.params.id]
-    res.redirect(longURL);
+    const longURL = urlDatabase[req.params.id].longURL
+    if(longURL === undefined) {
+        res.render("urls_wrongId")
+    } else {
+        res.redirect(longURL);
+    }
+    
   });
 
 app.post("/urls", (req, res) => {
-    
     let id = (Math.random() + 1).toString(36).substring(6);
-    urlDatabase[id] = req.body.longURL
-    res.redirect(`/urls/${id}`); 
+    let loggedIn = req.cookies["user_id"] 
+    if(!loggedIn) {
+        res.render("urls_forbidden")
+    } else {
+        urlDatabase[id] = {
+            longURL: req.body.longURL,
+            userID: loggedIn
+        }
+        res.redirect(`/urls/${id}`); 
+        
+    }
+    
   });
 
 app.get("/urls/new", (req, res) => {
     let id = req.cookies["user_id"]
     const templateVars = { user: users[id] }
-    res.render("urls_new", templateVars);
+    if(!id) {
+        res.redirect("/login")
+    } else {
+        res.render("urls_new", templateVars);
+    }
+        
   });
 
 app.get("/urls/:id", (req, res) => {
     let id = req.cookies["user_id"]
-    const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id],  user: users[id] };
-    res.render("urls_show", templateVars);
+    const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id].longURL,  user: users[id] };
+    if(!id) {
+        res.render("urls_notLoggedIn")
+    } else if(urlDatabase[req.params.id].userID !== id ) {
+        res.render("urls_notBelongToID")
+    }
+    else {
+        res.render("urls_show", templateVars);
+    }
+    
   });
+
+  const urlsForUser = (id) => {
+   let newDB = {}
+   for(let key in urlDatabase) {
+    if(urlDatabase[key].userID === id) {
+        newDB[key] = urlDatabase[key]
+    }
+
+   }
+   return newDB
+  }
+    
+    
 
 app.get("/urls", (req, res) => {
     let id = req.cookies["user_id"]
-    const templateVars = { urls: urlDatabase,  user: users[id] };
-    res.render("urls_index", templateVars);
+    let filteredDatabe = urlsForUser(id)
+    const templateVars = { urls: filteredDatabe,  user: users[id] };
+    if(!id) {
+        res.render("urls_notLoggedIn")
+    } else {
+        res.render("urls_index", templateVars);
+    }
+    
   });
 
 app.get("/urls.json", (req, res) => {
