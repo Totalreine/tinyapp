@@ -69,7 +69,7 @@ app.post("/register", (req, res) => {
 
 app.post("/logout", (req, res) => {
     res.clearCookie("user_id")
-    res.redirect("/register")
+    res.redirect("/login")
 })
 
 app.get("/login", (req, res) => {
