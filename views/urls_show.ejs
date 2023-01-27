@@ -17,15 +17,13 @@
     <div class="card text-center">
       <div class="card-header"></div>
       <div class="card-body">
-        <h5 class="card-title">TinyURL for: <%= longURL %></h5>
+        <h5 class="card-title">TinyURL for: <%= url.longURL %></h5>
         <p class="card-text">
           Short URL ID: <a href="/u/<%= id %>" target="_blank"><%= id %></a>
         </p>
       </div>
       <div class="card-footer text-muted"></div>
-      
     </div>
-        
     <div class="card text-center">
         <h3>  EDIT</h3>
         <form action="/urls/<%= id %>" method="post" id="edit">
@@ -34,8 +32,7 @@
             <button type="submit" form="edit" value="Submit" style="position: relative;">Submit</button>
             </form>
     </div>       
-            
-    
+ 
     <!-- Bootstrap JS -->
     <script
       src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

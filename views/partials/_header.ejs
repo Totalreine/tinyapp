@@ -16,22 +16,19 @@
         <div class="navbar-nav">
           <a class="nav-item nav-link" href="/urls">My URLs</a>
           <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
-          
-
+    
           <% if(user === undefined) {%>
             <p></p>
             <% } else { %>
-          <p><%= user.email %></p>
-           <% } %>
+            <p><%= user.email %></p>
+          <% } %>
 
-           
-           
-            <form action="/logout" method="post" id="logout">
-              <button type="submit" form="logout" value="Submit" style="position: relative;">Logout</button>
-            </form>
+          <form action="/logout" method="post" id="logout">
+            <button type="submit" form="logout" value="Submit" style="position: relative;">Logout</button>
+          </form>
          
         </div>
       </div>
     </nav>
-  </header>
+</header>
   
